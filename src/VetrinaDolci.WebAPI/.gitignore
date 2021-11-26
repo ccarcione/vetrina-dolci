@@ -386,6 +386,3 @@ FodyWeavers.xsd
 # JetBrains Rider
 .idea/
 *.sln.iml
-
-# Vetrina Dolci
-tempkey.jwk
