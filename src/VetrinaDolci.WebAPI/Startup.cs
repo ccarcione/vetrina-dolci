@@ -52,7 +52,17 @@ namespace VetrinaDolci.WebAPI
                 options.AddPolicy("ApiScope", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("scope", "api1");
+                    policy.RequireClaim("scope", "vetrinadolci.webapi");
+                });
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy( builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 });
             });
         }
@@ -70,6 +80,8 @@ namespace VetrinaDolci.WebAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
