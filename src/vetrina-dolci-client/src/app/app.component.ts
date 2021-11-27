@@ -28,5 +28,7 @@ export class AppComponent implements OnInit {
 
   logout() {
     this.oidcSecurityService.logoff();
+    this.oidcSecurityService.revokeAccessToken();
+    this.oidcSecurityService.revokeRefreshToken();
   }
 }
