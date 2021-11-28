@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -65,6 +69,8 @@ namespace VetrinaDolci.WebAPI
                         .AllowAnyMethod();
                 });
             });
+
+            services.AddDbContext<ApplicationContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,6 +99,43 @@ namespace VetrinaDolci.WebAPI
                 endpoints.MapControllers()
                     .RequireAuthorization("ApiScope");
             });
+
+            UpdateDatabaseMigrate<ApplicationContext>(app);
+        }
+
+        public static async void UpdateDatabaseMigrate<T>(IApplicationBuilder app) where T : DbContext
+        {
+            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<T>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<T>>();
+
+                string databaseName;
+                if (context.Database.ProviderName.Split('.').Last() == "Sqlite")
+                {
+                    databaseName = Path.GetFileName(context.Database.GetDbConnection().DataSource);
+
+                }
+                else
+                {
+                    databaseName = context.Database.GetDbConnection().Database;
+                }
+
+                if (!await (context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator).ExistsAsync())
+                {
+                    logger.LogDebug($"Database {databaseName} non trovato. Inizializzazione database con migrazione.");
+                    await context.Database.MigrateAsync();
+                }
+                logger.LogDebug($"Database {databaseName} found!");
+                if ((await context.Database.GetPendingMigrationsAsync()).Any())
+                {
+                    logger.LogDebug($"Database {databaseName} not updated. MigrateAsync...");
+                    await context.Database.MigrateAsync();
+                    logger.LogDebug($"Database Updated.");
+                }
+
+                logger.LogDebug($"Check database {databaseName} OK.");
+            }
         }
     }
 }
