@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { HelperService } from './services/helper.service';
 import { VetrinaDolciWebapiService } from './services/vetrina-dolci-webapi.service';
 
 @Component({
@@ -9,8 +10,11 @@ import { VetrinaDolciWebapiService } from './services/vetrina-dolci-webapi.servi
 })
 export class AppComponent implements OnInit {
   title = 'vetrina-dolci-client';
+  imgUrl: string = '';
 
-  constructor(public oidcSecurityService: OidcSecurityService, private vetrinaDolciWebapiService: VetrinaDolciWebapiService) {}
+  constructor(public oidcSecurityService: OidcSecurityService,
+    private vetrinaDolciWebapiService: VetrinaDolciWebapiService,
+    private helperService: HelperService) {}
 
   ngOnInit(): void {
     this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken, idToken }) => {
@@ -25,10 +29,22 @@ export class AppComponent implements OnInit {
   async callApi() {
     await this.vetrinaDolciWebapiService.getWeatherForecast().subscribe(s => console.log(s));
   }
-
+  
   logout() {
     this.oidcSecurityService.logoff();
     this.oidcSecurityService.revokeAccessToken();
     this.oidcSecurityService.revokeRefreshToken();
   }
+  
+  async searchImage() {
+    await this.helperService.getImageFromPixabay('caffe').subscribe((s: any) => {
+      if (s.total == '0') {
+        // load default image
+        this.imgUrl = 'assets/image-not-found.png';
+      } else {
+        this.imgUrl = s.hits[0]?.webformatURL;
+      }
+    });
+  }
+  
 }
