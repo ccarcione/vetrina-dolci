@@ -8,17 +8,18 @@ namespace VetrinaDolci.WebAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "DolciInVendita",
+                name: "Dolci",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Disponibilita = table.Column<int>(type: "INTEGER", nullable: false),
-                    InVenditaDa = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Nome = table.Column<string>(type: "TEXT", nullable: true),
+                    Prezzo = table.Column<string>(type: "TEXT", nullable: true),
+                    DolceInVenditaId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DolciInVendita", x => x.Id);
+                    table.PrimaryKey("PK_Dolci", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -35,22 +36,22 @@ namespace VetrinaDolci.WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Dolci",
+                name: "DolciInVendita",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Nome = table.Column<string>(type: "TEXT", nullable: true),
-                    Prezzo = table.Column<string>(type: "TEXT", nullable: true),
-                    DolceInVenditaId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Disponibilita = table.Column<int>(type: "INTEGER", nullable: false),
+                    InVenditaDa = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    DolceId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Dolci", x => x.Id);
+                    table.PrimaryKey("PK_DolciInVendita", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Dolci_DolciInVendita_DolceInVenditaId",
-                        column: x => x.DolceInVenditaId,
-                        principalTable: "DolciInVendita",
+                        name: "FK_DolciInVendita_Dolci_DolceId",
+                        column: x => x.DolceId,
+                        principalTable: "Dolci",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -61,7 +62,7 @@ namespace VetrinaDolci.WebAPI.Migrations
                 {
                     DolceId = table.Column<int>(type: "INTEGER", nullable: false),
                     IngredienteId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Quantita = table.Column<int>(type: "INTEGER", nullable: false),
+                    Quantita = table.Column<string>(type: "TEXT", nullable: true),
                     UnitaDiMisura = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -82,9 +83,9 @@ namespace VetrinaDolci.WebAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Dolci_DolceInVenditaId",
-                table: "Dolci",
-                column: "DolceInVenditaId");
+                name: "IX_DolciInVendita_DolceId",
+                table: "DolciInVendita",
+                column: "DolceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IngredientiDolce_IngredienteId",
@@ -95,6 +96,9 @@ namespace VetrinaDolci.WebAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "DolciInVendita");
+
+            migrationBuilder.DropTable(
                 name: "IngredientiDolce");
 
             migrationBuilder.DropTable(
@@ -102,9 +106,6 @@ namespace VetrinaDolci.WebAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ingredienti");
-
-            migrationBuilder.DropTable(
-                name: "DolciInVendita");
         }
     }
 }

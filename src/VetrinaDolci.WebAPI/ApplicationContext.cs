@@ -31,8 +31,6 @@ namespace VetrinaDolci.WebAPI
         {
             // Dolce-Ingrediente mxm
             modelBuilder.Entity<IngredientiDolce>()
-                .HasKey(x => new { x.DolceId, x.IngredienteId });
-            modelBuilder.Entity<IngredientiDolce>()
                 .HasOne(x => x.Dolce)
                 .WithMany(x => x.IngredientiDolce)
                 .HasForeignKey(x => x.DolceId);

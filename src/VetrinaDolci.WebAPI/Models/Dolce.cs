@@ -10,9 +10,14 @@ namespace VetrinaDolci.WebAPI.Models
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Prezzo { get; set; }
+        public string TipoPiatto { get; set; }
+        public string IngPrincipale { get; set; }
+        public int Persone { get; set; }
+        public string Preparazione { get; set; }
+        public string Note { get; set; }
 
         public int? DolceInVenditaId { get; set; }
-        public DolceInVendita DolceInVendita { get; set; }
+        public List<DolceInVendita> DolciInVendita { get; set; }
         public List<IngredientiDolce> IngredientiDolce { get; set; }
     }
 }

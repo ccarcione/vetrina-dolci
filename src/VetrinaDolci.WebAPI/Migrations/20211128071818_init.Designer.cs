@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VetrinaDolci.WebAPI;
 
 namespace VetrinaDolci.WebAPI.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20211128071818_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,25 +27,10 @@ namespace VetrinaDolci.WebAPI.Migrations
                     b.Property<int?>("DolceInVenditaId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("IngPrincipale")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Nome")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Note")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Persone")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Preparazione")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Prezzo")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TipoPiatto")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -79,26 +66,8 @@ namespace VetrinaDolci.WebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<double?>("Colesterolo")
-                        .HasColumnType("REAL");
-
-                    b.Property<double?>("Fibra")
-                        .HasColumnType("REAL");
-
-                    b.Property<double?>("Grassi")
-                        .HasColumnType("REAL");
-
-                    b.Property<double?>("Kcal")
-                        .HasColumnType("REAL");
-
                     b.Property<string>("Nome")
                         .HasColumnType("TEXT");
-
-                    b.Property<double?>("Proteine")
-                        .HasColumnType("REAL");
-
-                    b.Property<double?>("Zuccheri")
-                        .HasColumnType("REAL");
 
                     b.HasKey("Id");
 
@@ -107,18 +76,11 @@ namespace VetrinaDolci.WebAPI.Migrations
 
             modelBuilder.Entity("VetrinaDolci.WebAPI.Models.IngredientiDolce", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("DolceId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("IngredienteId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Quantita")
                         .HasColumnType("TEXT");
@@ -126,9 +88,7 @@ namespace VetrinaDolci.WebAPI.Migrations
                     b.Property<string>("UnitaDiMisura")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("DolceId");
+                    b.HasKey("DolceId", "IngredienteId");
 
                     b.HasIndex("IngredienteId");
 

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VetrinaDolci.WebAPI;
 
 namespace VetrinaDolci.WebAPI.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20211128183623_update-2")]
+    partial class update2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,25 +81,25 @@ namespace VetrinaDolci.WebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<double?>("Colesterolo")
+                    b.Property<double>("Colesterolo")
                         .HasColumnType("REAL");
 
-                    b.Property<double?>("Fibra")
+                    b.Property<double>("Fibra")
                         .HasColumnType("REAL");
 
-                    b.Property<double?>("Grassi")
+                    b.Property<double>("Grassi")
                         .HasColumnType("REAL");
 
-                    b.Property<double?>("Kcal")
+                    b.Property<double>("Kcal")
                         .HasColumnType("REAL");
 
                     b.Property<string>("Nome")
                         .HasColumnType("TEXT");
 
-                    b.Property<double?>("Proteine")
+                    b.Property<double>("Proteine")
                         .HasColumnType("REAL");
 
-                    b.Property<double?>("Zuccheri")
+                    b.Property<double>("Zuccheri")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");
@@ -116,9 +118,6 @@ namespace VetrinaDolci.WebAPI.Migrations
 
                     b.Property<int>("IngredienteId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Quantita")
                         .HasColumnType("TEXT");

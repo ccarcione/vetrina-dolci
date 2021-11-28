@@ -9,8 +9,8 @@ using VetrinaDolci.WebAPI;
 namespace VetrinaDolci.WebAPI.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20211128014912_init")]
-    partial class init
+    [Migration("20211128172122_update")]
+    partial class update
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,15 +27,28 @@ namespace VetrinaDolci.WebAPI.Migrations
                     b.Property<int?>("DolceInVenditaId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("IngPrincipale")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Nome")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Persone")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Preparazione")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Prezzo")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.Property<string>("TipoPiatto")
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("DolceInVenditaId");
+                    b.HasKey("Id");
 
                     b.ToTable("Dolci");
                 });
@@ -49,10 +62,15 @@ namespace VetrinaDolci.WebAPI.Migrations
                     b.Property<int>("Disponibilita")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("DolceId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("InVenditaDa")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DolceId");
 
                     b.ToTable("DolciInVendita");
                 });
@@ -63,8 +81,26 @@ namespace VetrinaDolci.WebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<double>("Colesterolo")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Fibra")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Grassi")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Kcal")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("Nome")
                         .HasColumnType("TEXT");
+
+                    b.Property<double>("Proteine")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Zuccheri")
+                        .HasColumnType("REAL");
 
                     b.HasKey("Id");
 
@@ -79,8 +115,8 @@ namespace VetrinaDolci.WebAPI.Migrations
                     b.Property<int>("IngredienteId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Quantita")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Quantita")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UnitaDiMisura")
                         .HasColumnType("TEXT");
@@ -92,13 +128,13 @@ namespace VetrinaDolci.WebAPI.Migrations
                     b.ToTable("IngredientiDolce");
                 });
 
-            modelBuilder.Entity("VetrinaDolci.WebAPI.Models.Dolce", b =>
+            modelBuilder.Entity("VetrinaDolci.WebAPI.Models.DolceInVendita", b =>
                 {
-                    b.HasOne("VetrinaDolci.WebAPI.Models.DolceInVendita", "DolceInVendita")
-                        .WithMany()
-                        .HasForeignKey("DolceInVenditaId");
+                    b.HasOne("VetrinaDolci.WebAPI.Models.Dolce", "Dolce")
+                        .WithMany("DolciInVendita")
+                        .HasForeignKey("DolceId");
 
-                    b.Navigation("DolceInVendita");
+                    b.Navigation("Dolce");
                 });
 
             modelBuilder.Entity("VetrinaDolci.WebAPI.Models.IngredientiDolce", b =>
@@ -122,6 +158,8 @@ namespace VetrinaDolci.WebAPI.Migrations
 
             modelBuilder.Entity("VetrinaDolci.WebAPI.Models.Dolce", b =>
                 {
+                    b.Navigation("DolciInVendita");
+
                     b.Navigation("IngredientiDolce");
                 });
 
