@@ -14,12 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Ricette.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Tabella.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+
     <None Update="vetrina-dolci.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
