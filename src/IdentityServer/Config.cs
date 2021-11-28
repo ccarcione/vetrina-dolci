@@ -26,6 +26,30 @@ namespace IdentityServer
             {
                 new Client
                 {
+                    ClientId = "client",
+
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+                    RedirectUris = { "http://localhost" },
+                    PostLogoutRedirectUris = { "http://localhost" },
+                    AllowedCorsOrigins = { "http://localhost" },
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    // scopes that client has access to
+                    AllowedScopes =
+                    {
+                        IdentityServer4.IdentityServerConstants.StandardScopes.OpenId,
+                        "vetrinadolci.webapi"
+                    },
+                },
+                new Client
+                {
                     ClientId = "vetrina-dolci-client",
 
                     // no interactive user, use the clientid/secret for authentication

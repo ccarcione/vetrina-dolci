@@ -9,4 +9,20 @@
     <PackageReference Include="IdentityModel" Version="4.6.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VetrinaDolci.WebAPI\VetrinaDolci.WebAPI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Ricette.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Tabella.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="vetrina-dolci.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
