@@ -4,6 +4,8 @@
 
 .deploy_webserver_on_linux_template: &deploy_webserver_on_linux
     script:
+        - apt-get -yq update
+        - apt-get -yqq install ssh
         - echo "add trust host"
         - mkdir -p ~/.ssh
         - chmod 700 ~/.ssh
@@ -123,8 +125,6 @@ master_deploy_IdentityServer:
     <<: *deploy_webserver_on_linux
     after_script:
         # riavvio servizio
-        - apt-get -yq update
-        - apt-get -yqq install ssh
         - apt-get install -y sshpass
         - sshpass -p $PASSWORDDEVHOST ssh $USERDEVHOST@$DEVHOST systemctl restart kestrel_VetrinaDolci.IdentityServer.master.service
     except:
@@ -150,8 +150,6 @@ master_deploy_VetrinaDolci.WebAPI:
     <<: *deploy_webserver_on_linux
     after_script:
         # riavvio servizio
-        - apt-get -yq update
-        - apt-get -yqq install ssh
         - apt-get install -y sshpass
         - sshpass -p $PASSWORDDEVHOST ssh $USERDEVHOST@$DEVHOST systemctl restart kestrel_VetrinaDolci.WebAPI.master.service
     except:
