@@ -9,7 +9,7 @@ namespace VetrinaDolci.WebAPI.Models
     {
         public int Id { get; set; }
         public string Nome { get; set; }
-        public string Prezzo { get; set; }
+        public double Prezzo { get; set; }
         public string TipoPiatto { get; set; }
         public string IngPrincipale { get; set; }
         public int Persone { get; set; }

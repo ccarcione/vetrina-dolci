@@ -14,6 +14,6 @@ namespace VetrinaDolci.WebAPI.Models
         public int? DolceId { get; set; }
         public Dolce Dolce { get; set; }
         [NotMapped]
-        public double Prezzo { get; set; }
+        public double? Prezzo { get; set; }
     }
 }

@@ -12,6 +12,7 @@ namespace VetrinaDolci.WebAPI
         public DbSet<Dolce> Dolci { get; set; }
         public DbSet<DolceInVendita> DolciInVendita { get; set; }
         public DbSet<Ingrediente> Ingredienti { get; set; }
+        public DbSet<IngredientiDolce> IngredientiDolce { get; set; }
 
         public string DbPath { get; private set; }
 
