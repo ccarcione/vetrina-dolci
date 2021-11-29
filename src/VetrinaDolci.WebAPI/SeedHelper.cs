@@ -41,6 +41,7 @@ namespace VetrinaDolci.WebAPI
 
             reader = new StreamReader(File.OpenRead("Ricette.csv"));
             List<Dolce> listaDolci = new List<Dolce>();
+            var rand = new Random();
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
@@ -57,7 +58,8 @@ namespace VetrinaDolci.WebAPI
                         Persone = int.Parse(values[4].Replace("\"", "")),
                         IngredientiDolce = new List<IngredientiDolce>(),
                         Preparazione = values[6].Replace("\"", ""),
-                        Note = values[8].Replace("\"", "")
+                        Note = values[8].Replace("\"", ""),
+                        Prezzo = rand.NextDouble() * 100
                     };
                     listaDolci.Add(dolce);
 
