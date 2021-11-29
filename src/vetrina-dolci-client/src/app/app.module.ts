@@ -11,13 +11,24 @@ import { BackofficeComponent } from './components/backoffice/backoffice.componen
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatButtonModule} from '@angular/material/button';
 import { NgxMasonryModule } from 'ngx-masonry';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms'; 
+import { ReactiveFormsModule } from '@angular/forms';
+import { DialogInputDisponibilitaComponent } from './components/dialog-input-disponibilita/dialog-input-disponibilita.component';
+import {MatInputModule} from '@angular/material/input';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     DolciInVenditaComponent,
-    BackofficeComponent
+    BackofficeComponent,
+    DialogInputDisponibilitaComponent
   ],
   imports: [
     BrowserModule,
@@ -26,7 +37,16 @@ import { NgxMasonryModule } from 'ngx-masonry';
     HttpClientModule,
     BrowserAnimationsModule,
     MatButtonModule,
-    NgxMasonryModule
+    NgxMasonryModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

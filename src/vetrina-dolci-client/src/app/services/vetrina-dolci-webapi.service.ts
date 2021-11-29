@@ -63,7 +63,7 @@ export class VetrinaDolciWebapiService {
   }
 
   putDolceInVendita(dolceInVendita: DolceInVendita) {
-    return this.http.put<DolceInVendita>(this.urlDolciInVenditaAPI, dolceInVendita, this.getHttpOptions());
+    return this.http.put<DolceInVendita>(`${this.urlDolciInVenditaAPI}${dolceInVendita.id}`, dolceInVendita, this.getHttpOptions());
   }
   
   postDolceInVendita(dolceInVendita: DolceInVendita) {
