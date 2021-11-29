@@ -102,7 +102,7 @@ namespace VetrinaDolci.WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteDolceInVendita(int id)
         {
             DolceInVendita dolceInVendita = await _context.DolciInVendita.FindAsync(id);
             if (dolceInVendita == null)

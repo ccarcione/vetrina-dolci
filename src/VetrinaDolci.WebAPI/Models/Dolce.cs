@@ -16,7 +16,6 @@ namespace VetrinaDolci.WebAPI.Models
         public string Preparazione { get; set; }
         public string Note { get; set; }
 
-        public int? DolceInVenditaId { get; set; }
         public List<DolceInVendita> DolciInVendita { get; set; }
         public List<IngredientiDolce> IngredientiDolce { get; set; }
     }
