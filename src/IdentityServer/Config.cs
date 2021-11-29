@@ -76,6 +76,24 @@ namespace IdentityServer
                     
                     AllowAccessTokensViaBrowser = true,
                     RequireConsent = true,
+                },
+                new Client
+                {
+                    ClientId = "demo_api_swagger",
+                    ClientName = "Swagger UI for demo_api",
+                    ClientSecrets = {new Secret("secret".Sha256())}, // change me!
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+
+                    RedirectUris = {"https://localhost:6001/swagger/oauth2-redirect.html"},
+                    AllowedCorsOrigins = {"https://localhost:6001"},
+                    AllowedScopes =
+                    {
+                        IdentityServer4.IdentityServerConstants.StandardScopes.OpenId,
+                        "vetrinadolci.webapi"
+                    },
                 }
             };
     }

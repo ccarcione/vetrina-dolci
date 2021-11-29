@@ -36,6 +36,25 @@ namespace VetrinaDolci.WebAPI
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "VetrinaDolci.WebAPI", Version = "v1" });
+
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        AuthorizationCode = new OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = new Uri("https://localhost:5001/connect/authorize"),
+                            TokenUrl = new Uri("https://localhost:5001/connect/token"),
+                            Scopes = new Dictionary<string, string>
+                            {
+                                {"vetrinadolci.webapi", "Demo VetrinaDolci.WebAPI - full access"}
+                            }
+                        }
+                    }
+                });
+
+                c.OperationFilter<AuthorizeCheckOperationFilter>();
             });
 
             // accepts any access token issued by identity server
@@ -71,6 +90,12 @@ namespace VetrinaDolci.WebAPI
             });
 
             services.AddDbContext<ApplicationContext>();
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Local;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,9 +104,16 @@ namespace VetrinaDolci.WebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "VetrinaDolci.WebAPI v1"));
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "VetrinaDolci.WebAPI v1");
+
+                c.OAuthClientId("demo_api_swagger");
+                c.OAuthAppName("Demo VetrinaDolci.WebAPI - Swagger");
+                c.OAuthUsePkce();
+            });
 
             app.UseHttpsRedirection();
 
