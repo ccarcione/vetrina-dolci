@@ -5,6 +5,7 @@ export class DolceInVendita {
     disponibilita: number;
     inVenditaDa: Date;
     prezzo: number;
+    img: string;
     
     dolceId: number;
     dolce: Dolce;

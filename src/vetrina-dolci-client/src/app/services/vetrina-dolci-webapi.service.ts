@@ -48,8 +48,8 @@ export class VetrinaDolciWebapiService {
     return this.http.get(`${this.urlDolciInVenditaAPI}${id}`, this.getHttpOptions());
   }
 
-  getAllDolciInVendita(paginazione: Pagination) {
-    return this.http.post<PaginationResult<DolceInVendita>>(
+  async getAllDolciInVendita(paginazione: Pagination): Promise<PaginationResult<DolceInVendita>>{
+    return await this.http.post<PaginationResult<DolceInVendita>>(
       `${this.urlDolciInVenditaAPI}GetPaginazione`,
       {
         params:
@@ -58,7 +58,8 @@ export class VetrinaDolciWebapiService {
           pageCount: paginazione.pageSize.toString()
         }
       },
-      this.getHttpOptions());
+      this.getHttpOptions())
+      .toPromise();
   }
 
   putDolceInVendita(dolceInVendita: DolceInVendita) {

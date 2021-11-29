@@ -1,5 +1,31 @@
-<ngx-masonry class="masonry-style" [ordered]="true" (itemsLoaded)="itemsLoaded()">
-    <div ngxMasonryItem [prepend]="d[0]" *ngFor="let d of data" class="item" >
-        <p>{{d.dolce.nome}}</p>
-    </div>
-</ngx-masonry>
+<ul class="cards">
+    <li *ngFor="let item of data;">
+        <div class="card">
+            <img src="{{item.img}}" class="card__image" alt="" />
+            <div class="card__overlay">
+                <div class="card__header">
+                    <svg class="card__arc" xmlns="http://www.w3.org/2000/svg">
+                        <path />
+                    </svg>
+                    <!-- <img class="card__thumb" src="" alt="" /> -->
+                    <p class="card__price">{{item.prezzo.toFixed(2)}} €</p>
+                    <div class="card__header-text">
+                        <h3 class="card__title">{{item.dolce.nome}}</h3>
+                        <span class="card__status">Disponibilità: {{item.disponibilita}}</span>
+                    </div>
+                </div>
+                <div class="card__description">
+                    <div *ngFor="let ingr of item.dolce.ingredientiDolce;">
+                        {{ingr.quantita}} {{ingr.unitaDiMisura}} {{ingr.ingrediente.nome}}
+                    </div>
+                </div>>
+            </div>
+        </div>
+    </li>
+</ul>
+
+<div class="more-image-contains-button">
+    <button mat-raised-button *ngIf="pagination.pageInfo?.hasNext" (click)="showNext()">Successivo</button>
+    <button mat-raised-button *ngIf="pagination.pageInfo?.hasNext" (click)="showPrev()">Precedente</button>
+    <h2 *ngIf="!pagination.pageInfo?.hasNext">Non ci sono altri elementi</h2>
+</div>

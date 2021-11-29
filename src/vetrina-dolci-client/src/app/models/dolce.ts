@@ -11,8 +11,8 @@ export class Dolce {
     preparazione: string;
     note: string;
     
-    DolciInVendita: DolceInVendita[];
-    IngredientiDolce: IngredientiDolce[];
+    dolciInVendita: DolceInVendita[];
+    ingredientiDolce: IngredientiDolce[];
 
     constructor(data?: Partial<Dolce>) {
       Object.assign(this, data);

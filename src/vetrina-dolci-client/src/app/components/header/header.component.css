@@ -1,11 +1,11 @@
-:host > * {
+/* :host > * {
     border: 1px black solid;
-}
+} */
 :host {
     display: flex;
     align-items: center;
     justify-content: end;
-    background-color: whitesmoke;
+    background-color: #fff;
     height: 10%;
     box-sizing: border-box;
     overflow-x: hidden;

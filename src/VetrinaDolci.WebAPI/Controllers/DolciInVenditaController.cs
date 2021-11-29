@@ -47,6 +47,8 @@ namespace VetrinaDolci.WebAPI.Controllers
             DateTime dataLimiteDolci = DateTime.Now.AddDays(-3);
             IQueryable<DolceInVendita> data = _context.DolciInVendita
                 .Include(c => c.Dolce)
+                    .ThenInclude(c => c.IngredientiDolce)
+                    .ThenInclude(c => c.Ingrediente)
                 .Where(c => c.InVenditaDa > dataLimiteDolci)      // solo dolci commestibili (max 3gg)
                 //.Where(c => filtri.DataDa.HasValue ? c.Data.Date >= filtri.DataDa.Value.Date : true)
                 //.Where(c => filtri.DataA.HasValue ? c.Data.Date <= filtri.DataA.Value.Date : true)
@@ -54,9 +56,10 @@ namespace VetrinaDolci.WebAPI.Controllers
                 ;
 
             PagedList<DolceInVendita> pagedList = PagedList<DolceInVendita>.ToPagedList(data, queryParameters);
-            // calcolo prezzo di v  endita in base al tempo trascorso
+
             pagedList.Data.ToList().ForEach(f =>
             {
+                // calcolo prezzo di v  endita in base al tempo trascorso
                 f.Prezzo = GetPrezzo(f);
             });
             return Ok(pagedList);

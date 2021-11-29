@@ -27,17 +27,6 @@ export class AppComponent implements OnInit {
     await this.vetrinaDolciWebapiService.getWeatherForecast().subscribe(s => console.log(s));
   }
   
-  async searchImage() {
-    await this.helperService.getImageFromPixabay('caffe').subscribe((s: any) => {
-      if (s.total == '0') {
-        // load default image
-        this.imgUrl = 'assets/image-not-found.png';
-      } else {
-        this.imgUrl = s.hits[0]?.webformatURL;
-      }
-    });
-  }
-  
   testGetDolce(id: number) {
     this.vetrinaDolciWebapiService.getDolce(id).subscribe(x => console.log(x));
   }

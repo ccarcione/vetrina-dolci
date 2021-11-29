@@ -1,5 +1,7 @@
 export class PageInfo {
     totalCount: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
     pageSize: number;
     currentPage: number;
     totalPages: number;
