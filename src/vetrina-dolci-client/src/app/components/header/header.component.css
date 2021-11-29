@@ -1,0 +1,27 @@
+:host > * {
+    border: 1px black solid;
+}
+:host {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    background-color: whitesmoke;
+    height: 10%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.title {
+    font-size: xxx-large;
+    font-family: fantasy;
+    margin: auto;
+}
+.login-logout {
+    margin: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+    .title {
+        font-size: x-large;
+    }
+}

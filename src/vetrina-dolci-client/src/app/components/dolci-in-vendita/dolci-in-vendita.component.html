@@ -1,0 +1,5 @@
+<ngx-masonry class="masonry-style" [ordered]="true" (itemsLoaded)="itemsLoaded()">
+    <div ngxMasonryItem [prepend]="d[0]" *ngFor="let d of data" class="item" >
+        <p>{{d.dolce.nome}}</p>
+    </div>
+</ngx-masonry>

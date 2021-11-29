@@ -1,0 +1,14 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    background-color: whitesmoke;
+    height: 90%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.masonry-style {
+    width: 90vw;
+    margin: auto;
+}

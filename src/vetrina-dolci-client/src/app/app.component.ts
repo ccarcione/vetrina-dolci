@@ -23,18 +23,8 @@ export class AppComponent implements OnInit {
     });
   }
 
-  login() {
-    this.oidcSecurityService.authorize();
-  }
-
   async callApi() {
     await this.vetrinaDolciWebapiService.getWeatherForecast().subscribe(s => console.log(s));
-  }
-  
-  logout() {
-    this.oidcSecurityService.logoff();
-    this.oidcSecurityService.revokeAccessToken();
-    this.oidcSecurityService.revokeRefreshToken();
   }
   
   async searchImage() {

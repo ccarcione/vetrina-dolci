@@ -1,0 +1,8 @@
+<div class="title">Vetrina Pasticceria</div>
+<div>
+    <a *ngIf="isAuthenticated" class="login-logout" mat-raised-button href="/backoffice">BackOffice</a>
+</div>
+<div>
+    <button *ngIf="!isAuthenticated" class="login-logout" (click)="login()" mat-raised-button>Login</button>
+    <button *ngIf="isAuthenticated" class="login-logout" (click)="logout()" mat-raised-button>Logout</button>
+</div>

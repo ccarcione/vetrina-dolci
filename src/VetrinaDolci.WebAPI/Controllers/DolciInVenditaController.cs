@@ -24,6 +24,7 @@ namespace VetrinaDolci.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<DolceInVendita>> GetDolceInVendita(int id)
         {
             var dolceInVendita = await _context.DolciInVendita.FindAsync(id);
@@ -38,14 +39,15 @@ namespace VetrinaDolci.WebAPI.Controllers
 
         [HttpGet]
         [HttpPost("GetPaginazione")]
+        [AllowAnonymous]
         public IActionResult GetAllDolciInVendita([FromQuery] QueryParameters queryParameters)
         {
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
-            DateTime now = DateTime.Now;
+            DateTime dataLimiteDolci = DateTime.Now.AddDays(-3);
             IQueryable<DolceInVendita> data = _context.DolciInVendita
                 .Include(c => c.Dolce)
-                .Where(c => (now - c.InVenditaDa).Hours < 72)   // solo dolci commestibili (max 3gg)
+                .Where(c => c.InVenditaDa > dataLimiteDolci)      // solo dolci commestibili (max 3gg)
                 //.Where(c => filtri.DataDa.HasValue ? c.Data.Date >= filtri.DataDa.Value.Date : true)
                 //.Where(c => filtri.DataA.HasValue ? c.Data.Date <= filtri.DataA.Value.Date : true)
                 //.Where(c => !string.IsNullOrWhiteSpace(filtri.TableName) ? c.TableName.Equals(filtri.TableName) : true)
