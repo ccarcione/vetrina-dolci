@@ -52,8 +52,8 @@ build_IdentityServer:
     only:
         refs:
             - main
-        changes:
-            - src/IdentityServer/**/*
+        # changes:
+        #     - src/IdentityServer/**/*
     script:
         - cd src/IdentityServer
         - dotnet restore
@@ -68,8 +68,8 @@ build_VetrinaDolci.WebAPI:
     only:
         refs:
             - main
-        changes:
-            - src/VetrinaDolci.WebAPI/**/*
+        # changes:
+        #     - src/VetrinaDolci.WebAPI/**/*
     script:
         - cd src/VetrinaDolci.WebAPI
         - dotnet restore
@@ -87,8 +87,8 @@ build_vetrina-dolci-client:
     only:
         refs:
             - main
-        changes:
-            - src/vetrina-dolci-client/**/*
+        # changes:
+        #     - src/vetrina-dolci-client/**/*
     image: registry.gitlab.com/projects-experimenta/vetrina-dolci:latest
     script:
         - cd src/vetrina-dolci-client
@@ -108,8 +108,8 @@ master_deploy_IdentityServer:
     only:
         refs:
             - main
-        changes:
-            - src/IdentityServer/**/*
+        # changes:
+        #     - src/IdentityServer/**/*
     variables:
         CONFIGURATION: "Debug"
         FRAMEWORK: "netcoreapp3.1"
@@ -133,8 +133,8 @@ master_deploy_VetrinaDolci.WebAPI:
     only:
         refs:
             - main
-        changes:
-            - src/VetrinaDolci.WebAPI/**/*
+        # changes:
+        #     - src/VetrinaDolci.WebAPI/**/*
     variables:
         CONFIGURATION: "Debug"
         FRAMEWORK: "net5.0"
@@ -161,8 +161,8 @@ master_deploy_vetrina-dolci-client:
     only:
         refs:
             - main
-        changes:
-            - src/vetrina-dolci-client/**/*
+        # changes:
+        #     - src/vetrina-dolci-client/**/*
     variables:
         APP_NAME: vetrina-dolci-client
         BUILD_OPTIONS: "--source-map true"
