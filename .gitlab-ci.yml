@@ -31,6 +31,8 @@
         - ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
         - chmod 644 ~/.ssh/known_hosts
         - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+        - apt-get update -qy
+        - apt-get install -y lftp
         - cd $PROJECT_FOLDER
         - npm i
         - npx ng build --prod --output-path dist/$APP_NAME $BUILD_OPTIONS
@@ -52,8 +54,8 @@ build_IdentityServer:
     only:
         refs:
             - main
-        # changes:
-        #     - src/IdentityServer/**/*
+        changes:
+            - src/IdentityServer/**/*
     script:
         - cd src/IdentityServer
         - dotnet restore
@@ -68,8 +70,8 @@ build_VetrinaDolci.WebAPI:
     only:
         refs:
             - main
-        # changes:
-        #     - src/VetrinaDolci.WebAPI/**/*
+        changes:
+            - src/VetrinaDolci.WebAPI/**/*
     script:
         - cd src/VetrinaDolci.WebAPI
         - dotnet restore
@@ -87,8 +89,8 @@ build_vetrina-dolci-client:
     only:
         refs:
             - main
-        # changes:
-        #     - src/vetrina-dolci-client/**/*
+        changes:
+            - src/vetrina-dolci-client/**/*
     image: registry.gitlab.com/projects-experimenta/vetrina-dolci:latest
     script:
         - cd src/vetrina-dolci-client
@@ -121,6 +123,8 @@ master_deploy_IdentityServer:
     <<: *deploy_webserver_on_linux
     after_script:
         # riavvio servizio
+        - apt-get -yq update
+        - apt-get -yqq install ssh
         - apt-get install -y sshpass
         - sshpass -p $PASSWORDDEVHOST ssh $USERDEVHOST@$DEVHOST systemctl restart kestrel_VetrinaDolci.IdentityServer.master.service
     except:
@@ -146,6 +150,8 @@ master_deploy_VetrinaDolci.WebAPI:
     <<: *deploy_webserver_on_linux
     after_script:
         # riavvio servizio
+        - apt-get -yq update
+        - apt-get -yqq install ssh
         - apt-get install -y sshpass
         - sshpass -p $PASSWORDDEVHOST ssh $USERDEVHOST@$DEVHOST systemctl restart kestrel_VetrinaDolci.WebAPI.master.service
     except:
