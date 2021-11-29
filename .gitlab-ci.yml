@@ -23,7 +23,7 @@
         - echo "done!"
 
 .deploy_angular_on_template: &deploy_angular_on
-    image: registry.gitlab.com/projects-experimenta/cre-tv:angular-cli-9.1.6
+    image: registry.gitlab.com/projects-experimenta/vetrina-dolci:latest
     script:
         - echo "add trust host"
         - mkdir -p ~/.ssh
@@ -89,7 +89,7 @@ build_vetrina-dolci-client:
             - main
         changes:
             - src/vetrina-dolci-client/**/*
-    image: registry.gitlab.com/projects-experimenta/cre-tv:angular-cli-9.1.6
+    image: registry.gitlab.com/projects-experimenta/vetrina-dolci:latest
     script:
         - cd src/vetrina-dolci-client
         - npm i
