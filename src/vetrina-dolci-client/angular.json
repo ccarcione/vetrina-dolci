@@ -75,7 +75,8 @@
               "browserTarget": "vetrina-dolci-client:build:production"
             },
             "development": {
-              "browserTarget": "vetrina-dolci-client:build:development"
+              "browserTarget": "vetrina-dolci-client:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
