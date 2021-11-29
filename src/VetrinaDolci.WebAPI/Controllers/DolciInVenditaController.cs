@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,6 +13,7 @@ namespace VetrinaDolci.WebAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class DolciInVenditaController : ControllerBase
     {
         private readonly ApplicationContext _context;
@@ -21,7 +23,6 @@ namespace VetrinaDolci.WebAPI.Controllers
             this._context = context;
         }
 
-        // GET: api/Values/5
         [HttpGet("{id}")]
         public async Task<ActionResult<DolceInVendita>> GetDolceInVendita(int id)
         {
@@ -90,7 +91,6 @@ namespace VetrinaDolci.WebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Values
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<DolceInVendita>> PostDolceInVendita(DolceInVendita dolceInVendita)

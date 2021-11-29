@@ -25,9 +25,8 @@ namespace VetrinaDolci.WebAPI.Controllers
         }
 
         // GET: api/<DolceController>
-        [HttpGet]
         [HttpPost("GetPaginazione")]
-        public async Task<IActionResult> GetAllDolci([FromQuery] QueryParameters queryParameters)
+        public IActionResult GetAllDolci([FromQuery] QueryParameters queryParameters)
         {
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
