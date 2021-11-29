@@ -12,6 +12,8 @@
     overflow-y: auto;
 }
 .title {
+    color: black;
+    text-decoration: none;
     font-size: xxx-large;
     font-family: fantasy;
     margin: auto;
