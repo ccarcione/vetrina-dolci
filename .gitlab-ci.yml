@@ -112,8 +112,8 @@ master_deploy_IdentityServer:
     only:
         refs:
             - main
-        # changes:
-        #     - src/IdentityServer/**/*
+        changes:
+            - src/IdentityServer/**/*
     variables:
         CONFIGURATION: "Debug"
         FRAMEWORK: "netcoreapp3.1"
@@ -137,8 +137,8 @@ master_deploy_VetrinaDolci.WebAPI:
     only:
         refs:
             - main
-        # changes:
-        #     - src/VetrinaDolci.WebAPI/**/*
+        changes:
+            - src/VetrinaDolci.WebAPI/**/*
     variables:
         CONFIGURATION: "Debug"
         FRAMEWORK: "net5.0"
@@ -165,8 +165,8 @@ master_deploy_vetrina-dolci-client:
     only:
         refs:
             - main
-        # changes:
-        #     - src/vetrina-dolci-client/**/*
+        changes:
+            - src/vetrina-dolci-client/**/*
     variables:
         APP_NAME: vetrina-dolci-client
         BUILD_OPTIONS: "--source-map true"
