@@ -64,7 +64,7 @@ build_IdentityServer:
 
 build_VetrinaDolci.WebAPI:
     stage: build
-    image: mcr.microsoft.com/dotnet/core/sdk:5.0
+    image: mcr.microsoft.com/dotnet/sdk:5.0
     only:
         refs:
             - main
@@ -129,7 +129,7 @@ master_deploy_IdentityServer:
 
 master_deploy_VetrinaDolci.WebAPI:
     stage: deploy
-    image: mcr.microsoft.com/dotnet/core/sdk:5.0
+    image: mcr.microsoft.com/dotnet/sdk:5.0
     only:
         refs:
             - main
