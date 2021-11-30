@@ -101,6 +101,18 @@ namespace VetrinaDolci.WebAPI
             db.Dolci.AddRange(listaDolci);
             await db.SaveChangesAsync();
 
+            Console.WriteLine("Seed Dolci in vetrina");
+            for (int i = 0; i < 100; i++)
+            {
+                db.DolciInVendita.Add(new DolceInVendita
+                {
+                    Disponibilita = rand.Next(1, 20),
+                    InVenditaDa = DateTime.Now.AddDays(rand.Next(-3, 0)),
+                    DolceId = rand.Next(1, listaDolci.Count())
+                });
+            }
+            await db.SaveChangesAsync();
+
             Console.WriteLine("Seed Done");
         }
 
