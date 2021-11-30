@@ -132,10 +132,10 @@ namespace VetrinaDolci.WebAPI
                     .RequireAuthorization("ApiScope");
             });
 
-            UpdateDatabaseMigrate<ApplicationContext>(app);
+            UpdateDatabaseMigrate<ApplicationContext>(app, env);
         }
 
-        public static async void UpdateDatabaseMigrate<T>(IApplicationBuilder app) where T : DbContext
+        public static async void UpdateDatabaseMigrate<T>(IApplicationBuilder app, IWebHostEnvironment env) where T : DbContext
         {
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
@@ -146,7 +146,6 @@ namespace VetrinaDolci.WebAPI
                 if (context.Database.ProviderName.Split('.').Last() == "Sqlite")
                 {
                     databaseName = Path.GetFileName(context.Database.GetDbConnection().DataSource);
-
                 }
                 else
                 {
@@ -157,6 +156,11 @@ namespace VetrinaDolci.WebAPI
                 {
                     logger.LogDebug($"Database {databaseName} non trovato. Inizializzazione database con migrazione.");
                     await context.Database.MigrateAsync();
+                    if (env.IsDevelopment())
+                    {
+                        var db = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+                        await SeedHelper.SeedFromCsv(db);
+                    }
                 }
                 logger.LogDebug($"Database {databaseName} found!");
                 if ((await context.Database.GetPendingMigrationsAsync()).Any())
