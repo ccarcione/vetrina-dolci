@@ -9,18 +9,21 @@ import { HeaderComponent } from './components/header/header.component';
 import { DolciInVenditaComponent } from './components/dolci-in-vendita/dolci-in-vendita.component';
 import { BackofficeComponent } from './components/backoffice/backoffice.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { NgxMasonryModule } from 'ngx-masonry';
-import {MatTableModule} from '@angular/material/table';
-import {MatPaginatorModule} from '@angular/material/paginator';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms'; 
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogInputDisponibilitaComponent } from './components/dialog-input-disponibilita/dialog-input-disponibilita.component';
-import {MatInputModule} from '@angular/material/input';
-import {MatIconModule} from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { DialogNuovoDolceInVetrinaComponent } from './components/dialog-nuovo-dolce-in-vetrina/dialog-nuovo-dolce-in-vetrina.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,8 @@ import {MatIconModule} from '@angular/material/icon';
     HeaderComponent,
     DolciInVenditaComponent,
     BackofficeComponent,
-    DialogInputDisponibilitaComponent
+    DialogInputDisponibilitaComponent,
+    DialogNuovoDolceInVetrinaComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +50,9 @@ import {MatIconModule} from '@angular/material/icon';
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [],
   bootstrap: [AppComponent]

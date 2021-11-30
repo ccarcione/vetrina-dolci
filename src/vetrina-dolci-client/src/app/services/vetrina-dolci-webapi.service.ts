@@ -67,6 +67,7 @@ export class VetrinaDolciWebapiService {
   }
   
   postDolceInVendita(dolceInVendita: DolceInVendita) {
+    dolceInVendita.dolce = null;
     return this.http.post<DolceInVendita>(this.urlDolciInVenditaAPI, dolceInVendita, this.getHttpOptions());
   }
 

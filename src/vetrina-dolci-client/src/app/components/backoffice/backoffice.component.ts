@@ -6,6 +6,7 @@ import { DolceInVendita } from 'src/app/models/dolce-in-vendita';
 import { Pagination } from 'src/app/models/pagination';
 import { VetrinaDolciWebapiService } from 'src/app/services/vetrina-dolci-webapi.service';
 import { DialogInputDisponibilitaComponent } from '../dialog-input-disponibilita/dialog-input-disponibilita.component';
+import { DialogNuovoDolceInVetrinaComponent } from '../dialog-nuovo-dolce-in-vetrina/dialog-nuovo-dolce-in-vetrina.component';
 
 @Component({
   selector: 'app-backoffice',
@@ -55,8 +56,22 @@ export class BackofficeComponent implements AfterViewInit {
       .subscribe(data => (this.data = data));
   }
 
-  nuovo () {
-    
+  nuovo() {
+    const dialogRef = this.dialog.open(DialogNuovoDolceInVetrinaComponent, {
+      width: '90%',
+      data: new DolceInVendita()
+    });
+
+    dialogRef.afterClosed().subscribe(async(result: DolceInVendita) => {
+      if (result.dolceId == undefined
+        || result.disponibilita == undefined
+        || result.inVenditaDa == undefined) {
+          alert('Errore: Completare tutti i campi.')
+        } else {
+          await lastValueFrom(this.vetrinaDolciWebapiService.postDolceInVendita(result));
+          location.reload();
+        }
+    });
   }
   
   async elimina (row: DolceInVendita) {
@@ -66,7 +81,7 @@ export class BackofficeComponent implements AfterViewInit {
 
   modifica(row: DolceInVendita): void {
     const dialogRef = this.dialog.open(DialogInputDisponibilitaComponent, {
-      width: '250px',
+      width: '450px',
       data: row,
     });
 
