@@ -1,6 +1,6 @@
 {
     "/api": {
-        "target": "https://localhost:6001",
+        "target": "https://VetrinaDolci.WebApi",
         "secure": false,
         "logLevel": "debug",
         "pathRewrite": {

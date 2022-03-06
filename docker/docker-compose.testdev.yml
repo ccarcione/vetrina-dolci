@@ -1,0 +1,74 @@
+# avvia il progetto dev locale dentro i containers (uno per progetto)
+# NB: prerequisiti:
+# - npm i
+# - dotnet restore
+services:
+  identity:
+    image: mcr.microsoft.com/dotnet/sdk:3.1
+    working_dir: /repo
+    entrypoint:
+      - dotnet
+      - run
+      - --project
+      - IdentityServer\IdentityServer.csproj
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: true
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "5001"
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "password"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/VetrinaDolci.pfx
+    container_name: VetrinaDolci.IdentityServer
+    networks:
+      - VetrinaDolci-network
+    volumes:
+      - type: bind
+        source: src
+        target: /repo
+      - ${USERPROFILE}\.aspnet\https:/https/
+    ports:
+      - "5000:80"
+      - "5001:443"
+  api:
+    image: mcr.microsoft.com/dotnet/sdk:5.0
+    working_dir: /repo
+    entrypoint:
+      - dotnet
+      - run
+      - --project
+      - VetrinaDolci.WebAPI\VetrinaDolci.WebAPI.csproj
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: true
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "6001"
+      ASPNETCORE_ENVIRONMENT: DockerContainer
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "password"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/VetrinaDolci.pfx
+    container_name: VetrinaDolci.WebApi
+    networks:
+      - VetrinaDolci-network
+    volumes:
+      - type: bind
+        source: src
+        target: /repo
+      - ${USERPROFILE}\.aspnet\https:/https/
+    ports:
+      - "6001:443"
+  site:
+    image: node
+    working_dir: /repo
+    entrypoint:
+      - npm
+      - run
+      - docker-container
+    container_name: vetrina-dolci-site
+    ports:
+      - "4200:4200"
+    networks:
+      - VetrinaDolci-network
+    volumes:
+      - type: bind
+        source: src/vetrina-dolci-client
+        target: /repo
+networks:
+  VetrinaDolci-network: {}
