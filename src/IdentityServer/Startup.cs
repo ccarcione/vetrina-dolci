@@ -58,16 +58,25 @@ namespace IdentityServer
 
         public void Configure(IApplicationBuilder app)
         {
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            var forwardOptions = new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
+            };
+            forwardOptions.KnownNetworks.Clear();
+            forwardOptions.KnownProxies.Clear();
+            app.UseForwardedHeaders(forwardOptions);
 
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            if (Environment.IsProduction())
+            {
+                // se non lo aggiungo nel '.well-known/openid-configuration' avrò gli indirizzi in http invece che https
+                app.UseHsts();
+            }
+            
             // uncomment if you want to add MVC
             app.UseStaticFiles();
             app.UseRouting();

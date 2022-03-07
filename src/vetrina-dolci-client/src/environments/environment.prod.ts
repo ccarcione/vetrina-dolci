@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  authority: 'https://identity.vetrina-dolci.experimenta.cloud'
 };

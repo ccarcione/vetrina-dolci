@@ -1,0 +1,1 @@
+docker compose --file .\docker\docker-compose.prod.yml --project-directory . --project-name VetrinaDolci-prod up --build  --force-recreate

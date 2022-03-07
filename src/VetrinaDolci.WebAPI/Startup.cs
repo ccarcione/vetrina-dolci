@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -104,6 +105,11 @@ namespace VetrinaDolci.WebAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -118,7 +124,10 @@ namespace VetrinaDolci.WebAPI
                 c.OAuthUsePkce();
             });
 
-            app.UseHttpsRedirection();
+            if (Configuration.GetSection("Identity:UseHttpsRedirection").Get<bool>())
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseRouting();
 
@@ -159,11 +168,8 @@ namespace VetrinaDolci.WebAPI
                 {
                     logger.LogDebug($"Database {databaseName} non trovato. Inizializzazione database con migrazione.");
                     await context.Database.MigrateAsync();
-                    if (env.IsDevelopment())
-                    {
-                        var db = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
-                        await SeedHelper.SeedFromCsv(db);
-                    }
+                    var db = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+                    await SeedHelper.SeedFromCsv(db);
                 }
                 logger.LogDebug($"Database {databaseName} found!");
                 if ((await context.Database.GetPendingMigrationsAsync()).Any())
