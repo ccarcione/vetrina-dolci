@@ -1,0 +1,32 @@
+# crea lo stack (images e container) per la produzione
+services:
+  identity:
+    build: 
+      context: .
+      dockerfile: docker/identity.dockerfile
+    image: registry.gitlab.com/projects-experimenta/vetrina-dolci/vetrinadolci-identity
+    container_name: VetrinaDolci.IdentityServer
+    environment:
+      ASPNETCORE_URLS: "http://+"
+    networks:
+      - VetrinaDolci-network
+  api:
+    build: 
+      context: .
+      dockerfile: docker/api.dockerfile
+    image: registry.gitlab.com/projects-experimenta/vetrina-dolci/vetrinadolci-api
+    container_name: VetrinaDolci.WebApi
+    environment:
+      ASPNETCORE_URLS: "http://+"
+    networks:
+      - VetrinaDolci-network
+  site:
+    build:
+      context: .
+      dockerfile: docker/site.dockerfile
+    image: registry.gitlab.com/projects-experimenta/vetrina-dolci/vetrinadolci-site
+    container_name: vetrina-dolci-site
+    networks:
+      - VetrinaDolci-network
+networks:
+  VetrinaDolci-network: {}
