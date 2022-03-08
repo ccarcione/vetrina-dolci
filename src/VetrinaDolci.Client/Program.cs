@@ -1,4 +1,5 @@
 ﻿using IdentityModel.Client;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -17,16 +18,26 @@ namespace VetrinaDolci.Client
     {
         static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            Console.WriteLine();
+            using var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddFilter("VetrinaDolci.Client", LogLevel.Debug)
+                    .AddConsole();
+            });
+            ILogger logger = loggerFactory.CreateLogger<Program>();
 
-            Console.WriteLine("###############  TEST Auth  ###############");
+            logger.LogInformation("Hello World!");
+            logger.LogInformation("");
+
+            logger.LogInformation("###############  TEST Auth  ###############");
             // discover endpoints from metadata
             var client = new HttpClient();
             var disco = await client.GetDiscoveryDocumentAsync("https://localhost:5001");
             if (disco.IsError)
             {
-                Console.WriteLine(disco.Error);
+                logger.LogInformation(disco.Error);
                 return;
             }
 
@@ -42,61 +53,61 @@ namespace VetrinaDolci.Client
 
             if (tokenResponse.IsError)
             {
-                Console.WriteLine(tokenResponse.Error);
+                logger.LogInformation(tokenResponse.Error);
                 return;
             }
 
-            ConsoleWriteJson(tokenResponse.Json.ToString());
-            Console.WriteLine();
+            ConsoleWriteJson(tokenResponse.Json.ToString(), logger);
+            logger.LogInformation("");
 
             // call api
             var apiClient = new HttpClient();
             apiClient.SetBearerToken(tokenResponse.AccessToken);
 
             string url = "https://localhost:6001/identity";
-            Console.WriteLine($"call api: {url}");
+            logger.LogInformation($"call api: {url}");
             var response = await apiClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine(response.StatusCode);
+                logger.LogInformation("StatusCode", response.StatusCode);
             }
             else
             {
                 var content = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(JArray.Parse(content));
+                logger.LogInformation("response.Content", JArray.Parse(content));
             }
-            Console.WriteLine();
+            logger.LogInformation("");
 
             string weatherForecasturl = "https://localhost:6001/WeatherForecast";
-            Console.WriteLine($"call api: {weatherForecasturl}");
+            logger.LogInformation($"call api: {weatherForecasturl}");
             response = await apiClient.GetAsync(weatherForecasturl);
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine(response.StatusCode);
+                logger.LogInformation("response.Content", response.StatusCode);
             }
             else
             {
                 var content = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(JArray.Parse(content));
+                logger.LogInformation("response.Content", JArray.Parse(content));
             }
-            Console.WriteLine();
+            logger.LogInformation("");
 
-            Console.WriteLine("###############  TEST Seed data da CSV a Sql Lite  ###############");
+            logger.LogInformation("###############  TEST Seed data da CSV a Sql Lite  ###############");
             using (var db = new ApplicationContext())
-                await SeedHelper.SeedFromCsv(db);
+                await SeedHelper.SeedFromCsv(logger, db);
 
             // Keep the console window open in debug mode.
-            Console.WriteLine("Press any key to exit.");
+            logger.LogInformation("Press any key to exit.");
             Console.ReadKey();
         }
 
-        static void ConsoleWriteJson(string json)
+        static void ConsoleWriteJson(string json, ILogger logger)
         {
             JObject parsed = JObject.Parse(json);
 
             foreach (var pair in parsed)
             {
-                Console.WriteLine("{0}: {1}", pair.Key, pair.Value);
+                logger.LogInformation("{0}: {1}", pair.Key, pair.Value);
             }
         }
     }

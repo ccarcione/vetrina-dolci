@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,11 +11,11 @@ namespace VetrinaDolci.WebAPI
 {
     public static class SeedHelper
     {
-        public static async Task SeedFromCsv(ApplicationContext db)
+        public static async Task SeedFromCsv(ILogger logger, ApplicationContext db)
         {
             // Note: This sample requires the database to be created before running.
-            Console.WriteLine($"Database path: {db.DbPath}.");
-            Console.WriteLine();
+            logger.LogInformation($"Database path: {db.DbPath}.");
+            logger.LogInformation("");
 
             // add Ingredienti from csv.
             var reader = new StreamReader(File.OpenRead("Tabella.csv"));
@@ -22,7 +23,7 @@ namespace VetrinaDolci.WebAPI
             {
                 var line = reader.ReadLine();
                 var values = line.Split(';');
-                Console.WriteLine("Parse Tabella Ingredienti: {0}", line);
+                logger.LogInformation("Parse Tabella Ingredienti: {0}", line);
 
                 db.Ingredienti.Add(new Ingrediente
                 {
@@ -48,7 +49,7 @@ namespace VetrinaDolci.WebAPI
                 var values = line.Split('@');
                 if (values[2].Replace("\"", "") == "Dessert")
                 {
-                    Console.WriteLine("Parse SOLO Ricette Dessert: {0}, {1}", values[0], values[1]);
+                    logger.LogInformation("Parse SOLO Ricette Dessert: {0}, {1}", values[0], values[1]);
                     string noteIngrediente = null;
                     Dolce dolce = new Dolce
                     {
@@ -101,7 +102,7 @@ namespace VetrinaDolci.WebAPI
             db.Dolci.AddRange(listaDolci);
             await db.SaveChangesAsync();
 
-            Console.WriteLine("Seed Dolci in vetrina");
+            logger.LogInformation("Seed Dolci in vetrina");
             for (int i = 0; i < 100; i++)
             {
                 db.DolciInVendita.Add(new DolceInVendita
@@ -113,7 +114,7 @@ namespace VetrinaDolci.WebAPI
             }
             await db.SaveChangesAsync();
 
-            Console.WriteLine("Seed Done");
+            logger.LogInformation("Seed Done");
         }
 
         private static IngredienteCsv GetIngrediente(string item)

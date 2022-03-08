@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,12 @@ namespace VetrinaDolci.WebAPI.Controllers
     public class SetupController : ControllerBase
     {
         private readonly ApplicationContext _applicationContext;
+        private readonly ILogger<SetupController> logger;
 
-        public SetupController(ApplicationContext applicationContext)
+        public SetupController(ApplicationContext applicationContext, ILogger<SetupController> logger)
         {
             this._applicationContext = applicationContext;
+            this.logger = logger;
         }
 
         // GET: api/<SetupController>
@@ -32,7 +35,7 @@ namespace VetrinaDolci.WebAPI.Controllers
             }
 
             //seed here
-            await SeedHelper.SeedFromCsv(_applicationContext);
+            await SeedHelper.SeedFromCsv(this.logger, _applicationContext);
 
             return Ok("seed done");
         }

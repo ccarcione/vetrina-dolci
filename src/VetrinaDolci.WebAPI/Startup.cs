@@ -169,7 +169,7 @@ namespace VetrinaDolci.WebAPI
                     logger.LogDebug($"Database {databaseName} non trovato. Inizializzazione database con migrazione.");
                     await context.Database.MigrateAsync();
                     var db = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
-                    await SeedHelper.SeedFromCsv(db);
+                    await SeedHelper.SeedFromCsv(logger, db);
                 }
                 logger.LogDebug($"Database {databaseName} found!");
                 if ((await context.Database.GetPendingMigrationsAsync()).Any())
