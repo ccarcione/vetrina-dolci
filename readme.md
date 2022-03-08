@@ -8,12 +8,16 @@ Vetrina dolci elettronica di una pasticceria. il progetto offre un servizio di i
 
 **DEMO**: http://vetrina-dolci.experimenta.cloud/
 
+**GitLab Repo**: https://gitlab.com/projects-experimenta/vetrina-dolci
+
+**GitHub Repo**: https://github.com/ccarcione/vetrina-dolci
+
 ## Assunzioni
 
 - le immagini di anteprima provengono dal servizio gratuito **pixabay** (https://pixabay.com/api/docs/). non sempre vengono risolte immagini accurate.
   purtroppo i servizi di ricerca immagini hanno costi poco accessibili.
 - i dati utilizzati provengono dal sito https://www.dbricette.it/database.htm
-- e' stato utilizzato un db SQLite per pura comodita'. in questo modo non e' necessario avere installato alcun motore di databse
+- e' stato utilizzato un db SQLite per pura comodita'. in questo modo non e' necessario avere installato alcun motore di database
 
 
 
