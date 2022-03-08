@@ -1,192 +1,98 @@
-# --------------------------------------------------------------
-#   SCRIPT DI APPOGGIO
-# --------------------------------------------------------------
-
-.deploy_webserver_on_linux_template: &deploy_webserver_on_linux
-    script:
-        - apt-get -yq update
-        - apt-get -yqq install ssh
-        - echo "add trust host"
-        - mkdir -p ~/.ssh
-        - chmod 700 ~/.ssh
-        - ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
-        - chmod 644 ~/.ssh/known_hosts
-        - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-        - echo "deploying on $HOST"
-        - cd $PROJECT_FOLDER
-        - dotnet restore
-        - dotnet build --configuration $CONFIGURATION
-        - dotnet publish --configuration $CONFIGURATION --framework $FRAMEWORK --self-contained true --runtime linux-x64
-        - cd bin/$CONFIGURATION/$FRAMEWORK/linux-x64
-        - apt-get update -qy
-        - apt-get install -y lftp
-        - echo "push .net core to $HOST"
-        - lftp -e "mirror -R publish/ /var/www/$PUBLISH_FOLDER ; exit" -u $USERHOST,$PASSWORDHOST sftp://$HOST
-        - echo "done!"
-
-.deploy_angular_on_template: &deploy_angular_on
-    image: registry.gitlab.com/projects-experimenta/vetrina-dolci:latest
-    script:
-        - echo "add trust host"
-        - mkdir -p ~/.ssh
-        - chmod 700 ~/.ssh
-        - ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
-        - chmod 644 ~/.ssh/known_hosts
-        - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-        - apt-get update -qy
-        - apt-get install -y lftp
-        - cd $PROJECT_FOLDER
-        - npm i
-        - npx ng build --prod --output-path dist/$APP_NAME $BUILD_OPTIONS
-        - echo "push $APP_NAME Angular client to $HOST"
-        - lftp -e "set ftp:ssl-protect-data true ; mirror -R dist/$APP_NAME/ /var/www/$PUBLISH_FOLDER ; exit" -u $USERHOST,$PASSWORDHOST sftp://$HOST
-        - echo "done!"
-
 stages:
-    - build
-    - deploy
+  - build
+  - deploy
 
-# --------------------------------------------------------------
-#   STAGE --> BUILD
-# --------------------------------------------------------------
+# https://docs.gitlab.com/ee/ci/docker/using_kaniko.html
+build-vetrinadolci-site:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/docker/site.dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}/vetrinadolci-site:${CI_COMMIT_TAG}"
+#   rules:
+#     - if: $CI_COMMIT_TAG =~ /release-/
 
-build_IdentityServer:
-    stage: build
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    only:
-        refs:
-            - main
-        changes:
-            - src/IdentityServer/**/*
-    script:
-        - cd src/IdentityServer
-        - dotnet restore
-        - dotnet build --configuration Debug
-    except:
-        changes:
-            - "*.md"
+build-identity:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/docker/identity.dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}/vetrinadolci-identity:${CI_COMMIT_TAG}"
+#   rules:
+#     - if: $CI_COMMIT_TAG =~ /release-/
 
-build_VetrinaDolci.WebAPI:
-    stage: build
-    image: mcr.microsoft.com/dotnet/sdk:5.0
-    only:
-        refs:
-            - main
-        changes:
-            - src/VetrinaDolci.WebAPI/**/*
-    script:
-        - cd src/VetrinaDolci.WebAPI
-        - dotnet restore
-        - dotnet build --configuration Debug
-    except:
-        changes:
-            - "*.md"
+build-api:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/docker/api.dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}/vetrinadolci-api:${CI_COMMIT_TAG}"
+#   rules:
+#     - if: $CI_COMMIT_TAG =~ /release-/
 
-build_vetrina-dolci-client:
-    stage: build
-    cache:
-        key: ${CI_COMMIT_REF_SLUG}
-        paths:
-            - src/vetrina-dolci-client/node_modules/
-    only:
-        refs:
-            - main
-        changes:
-            - src/vetrina-dolci-client/**/*
-    image: registry.gitlab.com/projects-experimenta/vetrina-dolci:latest
-    script:
-        - cd src/vetrina-dolci-client
-        - npm i
-        - ng build
-    except:
-        changes:
-            - "*.md"
-
-# --------------------------------------------------------------
-#   STAGE --> DEPLOY MASTER
-# --------------------------------------------------------------
-
-master_deploy_IdentityServer:
-    stage: deploy
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    only:
-        refs:
-            - main
-        changes:
-            - src/IdentityServer/**/*
-    variables:
-        CONFIGURATION: "Debug"
-        FRAMEWORK: "netcoreapp3.1"
-        PROJECT_FOLDER: "src/IdentityServer"
-        PUBLISH_FOLDER: "vetrina-dolci/IdentityServer"
-        HOST: $DEVHOST
-        USERHOST: $USERDEVHOST
-        PASSWORDHOST: $PASSWORDDEVHOST
-    <<: *deploy_webserver_on_linux
-    after_script:
-        # riavvio servizio
-        - apt-get install -y sshpass
-        - sshpass -p $PASSWORDDEVHOST ssh $USERDEVHOST@$DEVHOST systemctl restart kestrel_VetrinaDolci.IdentityServer.master.service
-    except:
-        changes:
-            - "*.md"
-
-master_deploy_VetrinaDolci.WebAPI:
-    stage: deploy
-    image: mcr.microsoft.com/dotnet/sdk:5.0
-    only:
-        refs:
-            - main
-        changes:
-            - src/VetrinaDolci.WebAPI/**/*
-    variables:
-        CONFIGURATION: "Debug"
-        FRAMEWORK: "net5.0"
-        PROJECT_FOLDER: "src/VetrinaDolci.WebAPI"
-        PUBLISH_FOLDER: "vetrina-dolci/VetrinaDolci.WebAPI"
-        HOST: $DEVHOST
-        USERHOST: $USERDEVHOST
-        PASSWORDHOST: $PASSWORDDEVHOST
-    <<: *deploy_webserver_on_linux
-    after_script:
-        # riavvio servizio
-        - apt-get install -y sshpass
-        - sshpass -p $PASSWORDDEVHOST ssh $USERDEVHOST@$DEVHOST systemctl restart kestrel_VetrinaDolci.WebAPI.master.service
-    except:
-        changes:
-            - "*.md"
-
-master_deploy_vetrina-dolci-client:
-    stage: deploy
-    cache:
-        key: ${CI_COMMIT_REF_SLUG}
-        paths:
-            - src/vetrina-dolci-client/node_modules/
-    only:
-        refs:
-            - main
-        changes:
-            - src/vetrina-dolci-client/**/*
-    variables:
-        APP_NAME: vetrina-dolci-client
-        BUILD_OPTIONS: "--source-map true"
-        PROJECT_FOLDER: "src/vetrina-dolci-client"
-        PUBLISH_FOLDER: "vetrina-dolci/vetrina-dolci-client"
-        HOST: $DEVHOST
-        USERHOST: $USERDEVHOST
-        PASSWORDHOST: $PASSWORDDEVHOST
-    <<: *deploy_angular_on
-    except:
-        changes:
-            - "*.md"
-
-# # --------------------------------------------------------------
-# #   STAGE --> DEPLOY STAGING
-# # --------------------------------------------------------------
-
-
-
-# # --------------------------------------------------------------
-# #   STAGE --> DEPLOY PRODUCTION
-# # --------------------------------------------------------------
-
+deploy:
+  stage: deploy
+  image: debian
+  variables:
+    SERVER: "$DEV_SERVER"
+    USER: "$DEV_USER"
+    PASSWORD: "$DEV_PASSWORD"
+    TEMP_FOLDER: "/temp-gitlab"
+  before_script:
+    - echo "install utils"
+    - apt-get update -qy
+    - apt-get install -y lftp sshpass openssh-client
+    - echo "SSH add trust host"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H $SERVER >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - echo "LFTP fix trust host"
+    - mkdir ~/.lftp
+    - echo "set ssl:verify-certificate no" >> ~/.lftp/rc
+  script:
+    - echo "update docker image"
+    - sshpass -p $PASSWORD ssh $USER@$SERVER docker pull ${CI_REGISTRY_IMAGE}/vetrinadolci-site:latest
+    - sshpass -p $PASSWORD ssh $USER@$SERVER docker pull ${CI_REGISTRY_IMAGE}/vetrinadolci-identity:latest
+    - sshpass -p $PASSWORD ssh $USER@$SERVER docker pull ${CI_REGISTRY_IMAGE}/vetrinadolci-api:latest
+    - echo "create gitlab temp directory..."
+    - echo "copy docker-compose files into gitlab temp directory..."
+    - >-
+      lftp -e "set ftp:ssl-protect-data true ;
+      rmdir $TEMP_FOLDER/${CI_PROJECT_NAME} ;
+      mkdir $TEMP_FOLDER/${CI_PROJECT_NAME} ;
+      put -O $TEMP_FOLDER/${CI_PROJECT_NAME} ${CI_PROJECT_DIR}/docker/docker-compose.prod.yml ;
+      exit"
+      -u $USER,$PASSWORD sftp://$SERVER
+    - echo "update docker container"
+    - sshpass -p $PASSWORD ssh $USER@$SERVER docker-compose --file $TEMP_FOLDER/${CI_PROJECT_NAME}/docker-compose.prod.yml --project-name ${CI_PROJECT_NAME}-prod up -d
+    - echo "clean temp directory"
+    - sshpass -p $PASSWORD ssh $USER@$SERVER rm -R $TEMP_FOLDER/${CI_PROJECT_NAME}
+    - echo "info container"
+    - sshpass -p $PASSWORD ssh $USER@$SERVER docker inspect vetrina-dolci-site
+    - sshpass -p $PASSWORD ssh $USER@$SERVER docker inspect VetrinaDolci.IdentityServer
+    - sshpass -p $PASSWORD ssh $USER@$SERVER docker inspect VetrinaDolci.WebApi
+#   rules:
+#     - if: $CI_COMMIT_TAG =~ /release-/
