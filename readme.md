@@ -6,7 +6,7 @@
 
 Vetrina dolci elettronica di una pasticceria. il progetto offre un servizio di identita' utenti, web api consultabili/riutilizzabili e client web multipiattaforma con funzioni di backoffice.
 
-
+**DEMO**: http://vetrina-dolci.experimenta.cloud/
 
 ## Assunzioni
 
